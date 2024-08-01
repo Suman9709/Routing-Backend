@@ -1,15 +1,17 @@
-const {Router} = require('express');
-const { createBlog, readAllBlog, readBlog, updateBlogs, patchBlog, deleteBlog } = require('../handlers/blog');
+const { Router } = require('express');
+const blogController = require("../controllers/blog.controller")
 
-const blogRouter=Router();
-blogRouter.post("", createBlog)
-blogRouter.get("", readAllBlog);
-blogRouter.get("/:blogId",readBlog)
-blogRouter.put("/:blogId", updateBlogs)
-blogRouter.patch("/:blogId", patchBlog)
-blogRouter.delete("/:blogId", deleteBlog)
+const blogRouter = Router();
+
+blogRouter.get('/', blogController.blogIndex);
+blogRouter.get('/new', blogController.blogCreateGet);
+blogRouter.post('/', blogController.blogCreatePost);
+blogRouter.get('/:id', blogController.blogDetails);
+blogRouter.get('/:id/edit', blogController.blogEditGet);
+blogRouter.put('/:id', blogController.blogEditPut);
+blogRouter.delete('/:id', blogController.blogDelete);
 
 
-module.exports={
+module.exports = {
     blogRouter,
 }

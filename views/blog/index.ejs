@@ -1,0 +1,14 @@
+<%- include ('../layout/main', {title: 'Home' , body: '' }) %>
+
+<h2>All Blogs</h2>
+<% blogs.forEach(blog=> { %>
+    <article>
+        <h3><a href="/blog/<%= blog._id %>">
+                <%= blog.title %>
+            </a></h3>
+        <p>
+            <%= blog.body.substring(0,100) %>
+        </p>
+    </article>
+    <% console.log(blog);}) %>
+    

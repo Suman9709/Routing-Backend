@@ -1,19 +1,29 @@
 const express = require('express');
 const { blogRouter } = require('./routes/blogroute');
-const { healthRoute } = require('./routes/healthroute')
-
+const { healthRoute } = require('./routes/healthroute');
+const { authorRouter} = require('./routes/authorroute');
+const { default: mongoose } = require('mongoose');
+const { MONGO_URI } = require('./env');
+const methodOverride = require('method-override')
 
 
 const PORT = 8080;
 
 const app = express();
 
-
-// const blogs = [];
-
+app.set('view engine', 'ejs');
+app.use(methodOverride("_method"))
 app.use(express.json());
+app.use(express.urlencoded({ extended:false}));
+app.use(express.static("public"));
 app.use("/health", healthRoute);
-app.use("/blog", blogRouter)
+app.use("/blog", blogRouter);
+app.use("/author", authorRouter);
+
+app.listen(PORT, () => {
+    console.log(`server running on port ${PORT}`);
+    mongoose.connect(MONGO_URI)
+});
 
 // app.get('/health', (req, res) => {
 //     res.send('ok')
@@ -83,6 +93,3 @@ app.use("/blog", blogRouter)
 //     return res.status(404).send();
 // })
 
-app.listen(PORT, () => {
-    console.log(`server running on port ${PORT}`);
-});
