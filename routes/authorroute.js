@@ -1,16 +1,38 @@
 const { Router } = require('express');
-const { createAuthor,readAllAuthors, readAuthors, updateAuthors,patchAuthor } = require('../handlers/author'); 
+const passport = require('passport');
 
-const authorRouter = Router();
+const authRouter = Router();
 
-authorRouter.post('', createAuthor);
-authorRouter.get('', readAllAuthors)
-authorRouter.get('/:authorId',readAuthors)
-authorRouter.put('/:authorId',updateAuthors)
-authorRouter.patch('/:authorId',patchAuthor)
 
+authRouter.get('/login', (res, req) => {
+    res.render('login')
+})
+
+authRouter.post('/login', passport.authenticate('local-login', {
+    successRedirect: '/blog',
+    failureRedirect: '/auth/signup',
+    failureFlash: true,
+})
+);
+
+authRouter.get('/signup', (res, req) => {
+    res.render('signup')
+});
+
+
+authRouter.post('/login', passport.authenticate('local-signup', {
+    successRedirect: '/blog',
+    failureRedirect: '/auth/signup',
+    failureFlash: true,
+})
+);
+
+authRouter.get('/logout', (res, req) => {
+    req.logout();
+    req.flash('success_msg', 'you are logged out')
+    res.redirect('/auth/login')
+})
 
 module.exports = {
-  authorRouter,
-
-};
+    authRouter,
+}
