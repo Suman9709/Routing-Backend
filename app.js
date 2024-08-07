@@ -1,14 +1,16 @@
 const express = require('express');
-const { blogRouter } = require('./routes/blogroute');
-const { healthRoute } = require('./routes/healthroute');
-const { authRouter} = require('./routes/authorroute');
 const { default: mongoose } = require('mongoose');
-const { MONGO_URI } = require('./env');
 const methodOverride = require('method-override')
-const {logger} = require("./middleware/logger")
 const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require('passport');
+
+const { blogRouter } = require('./routes/blogroute');
+const { healthRoute } = require('./routes/healthroute');
+const { authRouter} = require('./routes/authorroute');
+const { MONGO_URI } = require('./env');
+const {logger} = require("./middleware/logger")
+const { ensureAuth } = require('./middleware/auth');
 
 
 const PORT = 8080;
@@ -40,6 +42,16 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash())
+app.use((req,res,next)=>{
+    res.locals.success_message = req.flash("success-msg");
+
+    res.locals.error_message = req.flash("error-msg");
+    res.locals.error = req.flash("error");
+
+    res.locals.author = req.author || null;
+
+    next();
+})
 app.use("/health", healthRoute);
 app.use("/blog", blogRouter);
 app.use('/auth', authRouter)
